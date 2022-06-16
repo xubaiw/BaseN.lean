@@ -60,7 +60,7 @@ Encode the `ByteArray` into `String` with custom configuration.
 -/
 def encodeConfig (config : Config) (data : ByteArray) : String := 
   let length := config.alphabet.length
-  have h := config.alphabet.hSize
+  have h := config.alphabet.list_size
   let targetTets := 
     if h16 : length = 16 then 4
     else if h32 : length = 32 then 5
@@ -85,7 +85,7 @@ def decodeConfig (config : Config) (data : String) : Option ByteArray :=
   | some padChar => data.replace ⟨[padChar]⟩ "" 
   | _ => data
   let length := config.alphabet.length
-  let h := config.alphabet.hSize
+  let h := config.alphabet.list_size
   let currentTets :=
     if h16 : length = 16 then 4
     else if h32 : length = 32 then 5

@@ -38,17 +38,17 @@ structure Alphabet where
   /-- Reverse map for quick look up. -/
   inverse : HashMap Char UInt8 := Alphabet.mkBackward list
   /-- The size of `list` should be 16, 32 or 64. -/
-  hSize :
+  list_size :
     list.length = 16 ∨ 
     list.length = 32 ∨ 
     list.length = 64 := by simp
   /-- The padding is required if base32 or base64 is used. -/
-  hNeedPadding :
+  need_padChar :
     if list.length ≠ 16
     then padChar.isSome
     else True := by simp
   /-- `list` and `padChar` should be distinct. -/
-  hDistinct :
+  list_distinct :
     listDistinct list ∧ Alphabet.optionNotElem list padChar := by simp
 
 namespace Alphabet
