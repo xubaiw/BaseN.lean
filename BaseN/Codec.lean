@@ -59,11 +59,13 @@ def transformTets (f t : Fin 8) (truncate : Bool) (data : ByteArray) : ByteArray
 Encode the `ByteArray` into `String` with custom configuration.
 -/
 def encodeConfig (config : Config) (data : ByteArray) : String := 
-  let targetTets := match config.alphabet.length with
-    | 16 => 4
-    | 32 => 5
-    | 64 => 6
-    | _ => unreachable! -- TODO: how to prove this?
+  let length := config.alphabet.length
+  have h := config.alphabet.hSize
+  let targetTets := 
+    if h16 : length = 16 then 4
+    else if h32 : length = 32 then 5
+    else if h64 : length = 64 then 6
+    else absurd h (by simp_all)
   let transformed := transformTets 8 targetTets false data
   let unpadded := config.alphabet.forward transformed
   let groupSize := 8 / (targetTets.val.gcd 8)
@@ -82,11 +84,13 @@ def decodeConfig (config : Config) (data : String) : Option ByteArray :=
   let unpadded := match config.alphabet.padChar with
   | some padChar => data.replace ⟨[padChar]⟩ "" 
   | _ => data
-  let currentTets := match config.alphabet.length with
-    | 16 => 4
-    | 32 => 5
-    | 64 => 6
-    | _ => unreachable! -- TODO: how to prove this?
+  let length := config.alphabet.length
+  let h := config.alphabet.hSize
+  let currentTets :=
+    if h16 : length = 16 then 4
+    else if h32 : length = 32 then 5
+    else if h64 : length = 64 then 6
+    else absurd h (by simp_all)
   config.alphabet.backward unpadded true |>.map λ x => transformTets currentTets 8 true x
 
 end BaseN
